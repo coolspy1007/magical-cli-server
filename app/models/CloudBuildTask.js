@@ -26,7 +26,7 @@ class CloudBuildTask {
     this._branch = data.branch // 仓库分支名
     this._repo = data.repo // 仓库地址
     this._buildCmd = data.buildCmd // 构建命令
-    this._type = data.type // 静态资源服务类型 OSS
+    this._type = data.type // 上传服务器类型 oss ssh
     this._prod = data.prod.toString() === 'true' // 是否正式版本发布
     this._ctx = ctx
     this._app = app
@@ -169,11 +169,11 @@ class CloudBuildTask {
             Promise.all(
               files.map(async file => {
                 const filePath = path.resolve(this._buildPath, file)
-                const putRes = await this._oss.put(
-                  `${this._name}/${file}`,
-                  filePath
-                )
-                return putRes
+                  const putRes = await this._oss.put(
+                    `${this._name}/${file}`,
+                    filePath
+                  )
+                  return putRes
               })
             )
               .then(() => {

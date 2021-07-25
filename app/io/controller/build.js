@@ -3,7 +3,8 @@ const createCloudBuildTask = require('../../models/CloudBuildTask')
 const {
   OSS_DEV_BUCKET,
   OSS_PROD_BUCKET,
-  DOMAIN_NAME,
+  DOMAIN_SSH_NAME,
+  DOMAIN_OSS_NAME,
   DOMAIN_DEV_PORT,
   DOMAIN_PROD_PORT,
 } = require('../../../config/constant')
@@ -35,18 +36,20 @@ module.exports = app => {
         const portDomain = CloudBuildTask._prod
           ? DOMAIN_PROD_PORT
           : DOMAIN_DEV_PORT
-        let fllDomain = ''
-        // 如果是域名加上二级域名前缀，IP则是 IP+端口
-        if (/^\w+\.\w+$/.test(DOMAIN_NAME)) {
-          fllDomain = `${siteDomain}.${DOMAIN_NAME}`
+        let fullLink = ''
+        // oss 访问链接
+        if (CloudBuildTask._type === 'oss') {
+          fullLink = `http://${siteDomain}.${DOMAIN_OSS_NAME}/${CloudBuildTask._name}`
         } else {
-          fllDomain = `${DOMAIN_NAME}:${portDomain}`
+          // ssh 指定服务器 根据配置 ip:port 或者域名
+          fullLink = `http://${DOMAIN_SSH_NAME}:${portDomain}`
         }
-
+        // let fllDomain = `${siteDomain}.${DOMAIN_NAME}`
+        // 如果选择发布平台是 oss 构建成功后提示访问链接
         socket.emit(
           'success',
           helper.formatMsg('task success', {
-            message: `云构建成功，访问链接：http://${fllDomain}/${CloudBuildTask._name}`,
+            message: `发布成功，访问链接：${fullLink}`,
           })
         )
         socket.disconnect() // 任务完成够断开 socket 连接
