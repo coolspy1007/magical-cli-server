@@ -32,7 +32,7 @@
     "node": ">=10.0.0"
   },
   "scripts": {
-    "start": "egg-scripts start --daemon --title=egg-server-magical-cli-server --ignore-stderr",
+    "start": "egg-scripts start --daemon --title=egg-server-magical-cli-server",
     "stop": "egg-scripts stop --title=egg-server-magical-cli-server",
     "dev": "egg-bin dev",
     "debug": "egg-bin debug",
