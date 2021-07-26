@@ -29,13 +29,13 @@ module.exports = () => {
       await next()
       console.log('disconnect!')
       // 连接断开后清除缓存文件及 redis
-      // const cloudBuildTask = await createCloudBuildTask(ctx, app)
-      // await cloudBuildTask.clean()
+      const cloudBuildTask = await createCloudBuildTask(ctx, app)
+      await cloudBuildTask.clean()
 
     } catch (error) {
       // 出错后也要清除缓存文件及 redis
-      // const cloudBuildTask = await createCloudBuildTask(ctx, app)
-      // await cloudBuildTask.clean()
+      const cloudBuildTask = await createCloudBuildTask(ctx, app)
+      await cloudBuildTask.clean()
       logger.error('云构建出错，' + error.message)
     }
   }
