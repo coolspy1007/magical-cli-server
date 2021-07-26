@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 // /** @type Egg.EggPlugin */
 // module.exports = {
@@ -10,9 +10,9 @@
 exports.io = {
   enable: true,
   package: 'egg-socket.io',
-}
+};
 
 exports.redis = {
   enable: true,
   package: 'egg-redis',
-}
+};

@@ -1,5 +1,5 @@
-'use strict'
-const createCloudBuildTask = require('../../models/CloudBuildTask')
+'use strict';
+const createCloudBuildTask = require('../../models/CloudBuildTask');
 const {
   OSS_DEV_BUCKET,
   OSS_PROD_BUCKET,
@@ -7,42 +7,42 @@ const {
   DOMAIN_OSS_NAME,
   DOMAIN_DEV_PORT,
   DOMAIN_PROD_PORT,
-} = require('../../../config/constant')
+} = require('../../../config/constant');
 
 module.exports = app => {
   class Controller extends app.Controller {
     async index() {
-      const { ctx, app } = this
-      const { socket, helper, logger } = ctx
+      const { ctx, app } = this;
+      const { socket, helper, logger } = ctx;
       // 拿到 CloudBuildTask 对象
-      const CloudBuildTask = await createCloudBuildTask(ctx, app)
+      const CloudBuildTask = await createCloudBuildTask(ctx, app);
       try {
         // 构建前准备
-        await this.prepare(CloudBuildTask)
-        await this.download(CloudBuildTask)
-        await this.install(CloudBuildTask)
-        await this.build(CloudBuildTask)
+        await this.prepare(CloudBuildTask);
+        await this.download(CloudBuildTask);
+        await this.install(CloudBuildTask);
+        await this.build(CloudBuildTask);
         socket.emit(
           'build',
           helper.formatMsg('build success', {
             message: '云构建任务完成，准备进行云发布',
           })
-        )
-        await this.prePublish(CloudBuildTask)
-        await this.publish(CloudBuildTask)
+        );
+        await this.prePublish(CloudBuildTask);
+        await this.publish(CloudBuildTask);
         const siteDomain = CloudBuildTask._prod
           ? OSS_PROD_BUCKET
-          : OSS_DEV_BUCKET
+          : OSS_DEV_BUCKET;
         const portDomain = CloudBuildTask._prod
           ? DOMAIN_PROD_PORT
-          : DOMAIN_DEV_PORT
-        let fullLink = ''
+          : DOMAIN_DEV_PORT;
+        let fullLink = '';
         // oss 访问链接
         if (CloudBuildTask._type === 'oss') {
-          fullLink = `http://${siteDomain}.${DOMAIN_OSS_NAME}/${CloudBuildTask._name}`
+          fullLink = `http://${siteDomain}.${DOMAIN_OSS_NAME}/${CloudBuildTask._name}`;
         } else {
           // ssh 指定服务器 根据配置 ip:port 或者域名
-          fullLink = `http://${DOMAIN_SSH_NAME}:${portDomain}`
+          fullLink = `http://${DOMAIN_SSH_NAME}:${portDomain}`;
         }
         // let fllDomain = `${siteDomain}.${DOMAIN_NAME}`
         // 如果选择发布平台是 oss 构建成功后提示访问链接
@@ -51,52 +51,52 @@ module.exports = app => {
           helper.formatMsg('task success', {
             message: `发布成功，访问链接：${fullLink}`,
           })
-        )
-        socket.disconnect() // 任务完成够断开 socket 连接
+        );
+        socket.disconnect(); // 任务完成够断开 socket 连接
       } catch (error) {
-        logger.error('云构建任务失败，失败原因：' + error.message)
+        logger.error('云构建任务失败，失败原因：' + error.message);
         socket.emit(
           'build',
           helper.formatMsg('error', {
             message: '云构建任务失败，失败原因：' + error.message,
           })
-        )
-        socket.disconnect()
+        );
+        socket.disconnect();
       }
     }
 
     async prepare(cloudBuildTask) {
-      const { socket, helper } = this.ctx
+      const { socket, helper } = this.ctx;
       socket.emit(
         'build',
         helper.formatMsg('prepare', {
           message: '开始执行构建前的准备工作',
         })
-      )
-      await cloudBuildTask.prepare()
+      );
+      await cloudBuildTask.prepare();
     }
 
     async download(cloudBuildTask) {
-      const { socket, helper } = this.ctx
+      const { socket, helper } = this.ctx;
       socket.emit(
         'build',
         helper.formatMsg('download', {
           message: '开始下载源码',
         })
-      )
-      await cloudBuildTask.download()
+      );
+      await cloudBuildTask.download();
     }
 
     async install(cloudBuildTask) {
-      const { socket, helper } = this.ctx
+      const { socket, helper } = this.ctx;
       socket.emit(
         'build',
         helper.formatMsg('install', {
           message: '开始安装依赖',
         })
-      )
+      );
       try {
-        await cloudBuildTask.install()
+        await cloudBuildTask.install();
       } catch (error) {
         socket.emit(
           'failed',
@@ -105,20 +105,20 @@ module.exports = app => {
               error.message ? '失败原因：' + error.message : ''
             }`,
           })
-        )
+        );
       }
     }
 
     async build(cloudBuildTask) {
-      const { socket, helper } = this.ctx
+      const { socket, helper } = this.ctx;
       socket.emit(
         'build',
         helper.formatMsg('build', {
           message: '开始构建',
         })
-      )
+      );
       try {
-        await cloudBuildTask.build()
+        await cloudBuildTask.build();
       } catch (error) {
         socket.emit(
           'failed',
@@ -127,44 +127,44 @@ module.exports = app => {
               error.message ? '失败原因：' + error.message : ''
             }`,
           })
-        )
+        );
       }
     }
     async prePublish(cloudBuildTask) {
-      const { socket, helper } = this.ctx
+      const { socket, helper } = this.ctx;
       socket.emit(
         'build',
         helper.formatMsg('pre publish', {
           message: '开始发布前准备',
         })
-      )
-      await cloudBuildTask.prePublish()
+      );
+      await cloudBuildTask.prePublish();
     }
     async publish(cloudBuildTask) {
-      const { socket, helper } = this.ctx
+      const { socket, helper } = this.ctx;
       socket.emit(
         'build',
         helper.formatMsg('publish', {
           message: '开始进行云发布任务',
         })
-      )
-      const publishRes = await cloudBuildTask.publish()
+      );
+      const publishRes = await cloudBuildTask.publish();
       if (publishRes) {
         socket.emit(
           'build',
           helper.formatMsg('publish success', {
             message: '发布成功',
           })
-        )
+        );
       } else {
         socket.emit(
           'failed',
           helper.formatMsg('publish error', {
             message: '发布失败，失败原因：' + publishRes.message,
           })
-        )
+        );
       }
     }
   }
-  return Controller
-}
+  return Controller;
+};

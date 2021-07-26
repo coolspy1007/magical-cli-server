@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 module.exports = {
   // 规范发送消息格式
@@ -9,13 +9,13 @@ module.exports = {
         timestamp: Date.now(),
       },
       metaData
-    )
+    );
     return {
       meta,
       data: {
         action,
         payload,
       },
-    }
+    };
   },
-}
+};
