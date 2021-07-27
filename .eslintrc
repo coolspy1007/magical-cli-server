@@ -1,9 +1,9 @@
 {
-  "extends": "eslint-config-egg",
-  "rules": {
-    "linebreak-style": [
-      "error",
-      "unix"
-    ]
-  }
+  "extends": "eslint-config-egg"
+  // "rules": {
+  //   "linebreak-style": [
+  //     "error",
+  //     "unix"
+  //   ]
+  // }
 }
