@@ -6,7 +6,7 @@ const { readFile } = require('../app/utils/tools');
 const CLI_HOME = '.magical-cli';
 module.exports = {
   // INSTALL_COMMAND: 'npm install --registry=https://registry.npm.taobao.org', // 安装依赖命令
-  INSTALL_COMMAND: 'yarn instal', // 安装依赖命令
+  INSTALL_COMMAND: 'yarn install', // 安装依赖命令
   REDIS_CLOUD_BUILD_PREFIX: 'magical_cloud_build:', // 云构建任务 redis key 前缀
   CLI_HOME, // 主目录名称
   OSS_ALI_ACCESS_KEY_ID: 'LTAI5tHAHWzQfVjxnqhMpDih', // 阿里云 API AccessKey ID
