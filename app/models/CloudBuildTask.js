@@ -81,6 +81,7 @@ class CloudBuildTask {
       args,
       {
         cwd: this._sourceCodeDir,
+        stdio: 'pipe',
       },
       data => {
         this._ctx.socket.emit('installing', data.toString());
@@ -100,6 +101,7 @@ class CloudBuildTask {
       args,
       {
         cwd: this._sourceCodeDir,
+        stdio: 'pipe',
       },
       data => {
         this._ctx.socket.emit('building', data.toString());

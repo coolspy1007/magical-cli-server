@@ -39,7 +39,7 @@ function spawn(command, args, options) {
  * @param stderr
  * @return {Promise<unknown>}
  */
-function execAsync(command, args, options, stdout, stderr) {
+function execAsync(command, args, options, stdout = null, stderr = null) {
   return new Promise((resolve, reject) => {
     const cp = spawn(command, args, options);
     cp.on('error', err => {
@@ -52,14 +52,12 @@ function execAsync(command, args, options, stdout, stderr) {
         reject(code);
       }
     });
-    if (!stdout) {
-      stdout = () => {};
+    if (stdout) {
+      cp.stdout.on('data', stdout);
     }
-    if (!stderr) {
-      stderr = () => {};
+    if (stderr) {
+      cp.stderr.on('data', stderr);
     }
-    cp.stdout.on('data', stdout);
-    cp.stderr.on('data', stderr);
   });
 }
 
